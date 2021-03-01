@@ -143,6 +143,15 @@ namespace Swig {
       }
     };
 
+    struct SwigDirectorMethod {
+      const char *name;
+      const char *desc;
+      jmethodID methid;
+      SwigDirectorMethod(JNIEnv *jenv, jclass baseclass, const char *name, const char *desc) : name(name), desc(desc) {
+        methid = jenv->GetMethodID(baseclass, name, desc);
+      }
+    };
+
     /* Java object wrapper */
     JObjectWrapper swig_self_;
 
@@ -164,6 +173,11 @@ namespace Swig {
         }
       }
       jenv->DeleteLocalRef(jobj);
+    }
+    
+    jclass swig_new_global_ref(JNIEnv *jenv, const char *classname) {
+      jclass clz = jenv->FindClass(classname);
+      return clz ? (jclass)jenv->NewGlobalRef(clz) : 0;
     }
 
   public:
